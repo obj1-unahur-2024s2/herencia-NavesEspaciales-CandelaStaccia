@@ -1,0 +1,146 @@
+import naves.*
+
+describe "Test de naves espaciales" {
+
+    const navePasa = new NavePasajero(velocidad=0, direccion=0, combustible=1000, cantPasajeros=500, racionesComida=1200, racionesBebida=2500)
+    const naveBaliza = new NaveBaliza(velocidad=0, direccion=0, combustible=500)
+    const naveComb = new NaveCombate(velocidad=0, direccion=0, combustible=1200)
+    const naveSig = new NaveSigilosa(velocidad=0, direccion=0, combustible=1200)
+    const naveHosp = new NaveHospital(velocidad=0, direccion=0, combustible=1000, cantPasajeros=500, racionesComida=1200, racionesBebida=2500)
+
+    method initialize() {
+    naveBaliza.prepararViaje()
+    navePasa.prepararViaje()
+    naveComb.prepararViaje()
+    naveSig.prepararViaje()
+    naveHosp.prepararViaje()
+  }
+
+  test "Verificacion de valores de la nave de pasajeros" {
+    assert.equals(31000, navePasa.combustible())
+    assert.equals(5000, navePasa.velocidad())
+    assert.equals(3200, navePasa.racionesComida())
+    assert.equals(5500, navePasa.racionesBebida())
+    assert.equals(1, navePasa.direccion())
+    assert.that(navePasa.estaTranquila())
+    assert.that(navePasa.estaDeRelajo())
+    assert.that(navePasa.tienePocaActividad())
+  }
+
+  test "Verificacion de valores de la nave de pasajeros luego de recibir una amenaza" {
+    navePasa.recibirAmenaza()
+
+    assert.equals(31000, navePasa.combustible())
+    assert.equals(15000, navePasa.velocidad())
+    assert.equals(2700, navePasa.racionesComida())
+    assert.equals(500, navePasa.racionesComidaServidas())
+    assert.equals(4500, navePasa.racionesBebida())
+    assert.equals(1, navePasa.direccion())
+    assert.notThat(navePasa.estaTranquila())
+    assert.notThat(navePasa.estaDeRelajo())
+    assert.notThat(navePasa.tienePocaActividad())
+  }
+
+  test "Verificacion de valores de la nave baliza" {
+    assert.equals(30500, naveBaliza.combustible())
+    assert.equals(5000, naveBaliza.velocidad())
+    assert.equals("verde", naveBaliza.colorBaliza())
+    assert.equals(0, naveBaliza.direccion())
+    assert.that(naveBaliza.estaTranquila())
+    assert.that(naveBaliza.estaDeRelajo())
+    assert.that(naveBaliza.tienePocaActividad())
+  }
+
+  test "Verificacion de valores de la nave baliza luego de recibir una amenaza" {
+    naveBaliza.recibirAmenaza()
+
+    assert.equals(30500, naveBaliza.combustible())
+    assert.equals(5000, naveBaliza.velocidad())
+    assert.equals("rojo", naveBaliza.colorBaliza())
+    assert.equals(10, naveBaliza.direccion())
+    assert.notThat(naveBaliza.estaTranquila())
+    assert.notThat(naveBaliza.estaDeRelajo())
+    assert.notThat(naveBaliza.tienePocaActividad())
+  }
+
+  test "Verificacion de valores de la nave de combate" {
+    assert.equals(31200, naveComb.combustible())
+    assert.equals(20000, naveComb.velocidad())
+    assert.notThat(naveComb.estaInvisible())
+    assert.notThat(naveComb.misilesDesplegados())
+    assert.equals(0, naveComb.direccion())
+    assert.that(naveComb.emitioMensaje("Saliendo en mision"))
+    assert.notThat(naveComb.estaTranquila())
+    assert.notThat(naveComb.estaDeRelajo())
+    assert.that(naveComb.tienePocaActividad())
+    
+  }
+
+  test "Verificacion de valores de la nave de combate luego de recibir una amenaza" {
+    naveComb.recibirAmenaza()
+
+    assert.equals(31200, naveComb.combustible())
+    assert.equals(20000, naveComb.velocidad())
+    assert.notThat(naveComb.estaInvisible())
+    assert.notThat(naveComb.misilesDesplegados())
+    assert.equals(2, naveComb.direccion())
+    assert.that(naveComb.emitioMensaje("Amenaza recibida"))
+    assert.equals(["Saliendo en mision", "Amenaza recibida"], naveComb.mensajesEmitidos())
+    assert.notThat(naveComb.estaTranquila())
+    assert.notThat(naveComb.estaDeRelajo())
+    assert.that(naveComb.tienePocaActividad())
+  }
+
+  test "Verificacion de valores de la nave de combate sigilosa" {
+    assert.equals(31200, naveSig.combustible())
+    assert.equals(20000, naveSig.velocidad())
+    assert.notThat(naveSig.estaInvisible())
+    assert.notThat(naveSig.misilesDesplegados())
+    assert.equals(0, naveSig.direccion())
+    assert.that(naveSig.emitioMensaje("Saliendo en mision"))
+    assert.notThat(naveSig.estaTranquila())
+    assert.notThat(naveSig.estaDeRelajo())
+    assert.that(naveSig.tienePocaActividad())
+  }
+
+  test "Verificacion de valores de la nave de combate sigilosa luego de recibir una amenaza" {
+    naveSig.recibirAmenaza()
+
+    assert.equals(31200, naveSig.combustible())
+    assert.equals(20000, naveSig.velocidad())
+    assert.that(naveSig.estaInvisible())
+    assert.that(naveSig.misilesDesplegados())
+    assert.equals(2, naveSig.direccion())
+    assert.that(naveSig.emitioMensaje("Amenaza recibida"))
+    assert.equals(["Saliendo en mision", "Amenaza recibida"], naveSig.mensajesEmitidos())
+    assert.notThat(naveSig.estaTranquila())
+    assert.notThat(naveSig.estaDeRelajo())
+    assert.that(naveSig.tienePocaActividad())
+  }
+
+  test "Verificacion de valores de la nave hospital" {
+    assert.equals(31000, naveHosp.combustible())
+    assert.equals(5000, naveHosp.velocidad())
+    assert.equals(3200, naveHosp.racionesComida())
+    assert.equals(5500, naveHosp.racionesBebida())
+    assert.equals(1, naveHosp.direccion())
+    assert.that(naveHosp.estaTranquila())
+    assert.that(naveHosp.estaDeRelajo())
+    assert.that(naveHosp.tienePocaActividad())
+  }
+
+  test "Verificacion de valores de la nave hospital luego de recibir una amenaza" {
+    naveHosp.recibirAmenaza()
+
+    assert.equals(31000, naveHosp.combustible())
+    assert.equals(15000, naveHosp.velocidad())
+    assert.equals(2700, naveHosp.racionesComida())
+    assert.equals(500, naveHosp.racionesComidaServidas())
+    assert.equals(4500, naveHosp.racionesBebida())
+    assert.equals(1, naveHosp.direccion())
+    assert.notThat(naveHosp.estaTranquila())
+    assert.notThat(naveHosp.estaDeRelajo())
+    assert.notThat(naveHosp.tienePocaActividad())
+    assert.that(naveHosp.quirofanosPreparados())
+  }
+}
